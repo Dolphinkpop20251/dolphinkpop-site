@@ -1,4 +1,6 @@
-<<<<<<< HEAD
+ HEAD
+ HEAD
+ 614788c4e6a197ebba94c148dea6f67e748d1f2f
 # Logs
 logs
 *.log
@@ -135,6 +137,7 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+<<<<<<< HEAD
 =======
 # ÀÇÁ¸¼º ÆĞÅ°Áö 
 /node_modules 
@@ -156,4 +159,6 @@ yarn-error.log*
 # Ä³½Ã ÆÄÀÏ 
 .cache/ 
 *.pack 
->>>>>>> ec4863d (ì´ˆê¸° í”„ë¡œì íŠ¸ ì„¤ì •)
+>>>>>>> ec4863d (ì´ˆê¸° ?„ë¡œ?íŠ¸ ?¤ì •)
+=======
+>>>>>>> 614788c4e6a197ebba94c148dea6f67e748d1f2f
