@@ -1,0 +1,97 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 사용자 인증 확인 함수
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // 해당 사용자인지 확인하는 함수
+    function isUser(userId) {
+      return request.auth.uid == userId;
+    }
+    
+    // 관리자 여부 확인 함수
+    function isAdmin() {
+      return request.auth.uid != null && 
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // 사용자 컬렉션 규칙
+    match /users/{userId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update: if isUser(userId) || isAdmin();
+      allow delete: if isAdmin();
+      
+      // 사용자의 관심 아이돌 컬렉션
+      match /followedIdols/{idolId} {
+        allow read: if true;
+        allow write: if isUser(userId);
+      }
+    }
+    
+    // 게시물 컬렉션 규칙
+    match /posts/{postId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && 
+                    (resource.data.authorId == request.auth.uid || isAdmin());
+      allow delete: if isAuthenticated() && 
+                    (resource.data.authorId == request.auth.uid || isAdmin());
+      
+      // 게시물의 댓글 컬렉션
+      match /comments/{commentId} {
+        allow read: if true;
+        allow create: if isAuthenticated();
+        allow update: if isAuthenticated() && 
+                      (resource.data.authorId == request.auth.uid || isAdmin());
+        allow delete: if isAuthenticated() && 
+                      (resource.data.authorId == request.auth.uid || isAdmin() || 
+                       get(/databases/$(database)/documents/posts/$(postId)).data.authorId == request.auth.uid);
+      }
+      
+      // 게시물의 좋아요 컬렉션
+      match /likes/{userId} {
+        allow read: if true;
+        allow write: if isAuthenticated() && isUser(userId);
+      }
+    }
+    
+    // 아이돌 정보 컬렉션 규칙
+    match /idols/{idolId} {
+      allow read: if true;
+      allow create: if isAuthenticated() && isAdmin();
+      allow update: if isAuthenticated() && isAdmin();
+      allow delete: if isAuthenticated() && isAdmin();
+    }
+    
+    // 갤러리 컬렉션 규칙
+    match /galleries/{galleryId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && 
+                    (resource.data.authorId == request.auth.uid || isAdmin());
+      allow delete: if isAuthenticated() && 
+                    (resource.data.authorId == request.auth.uid || isAdmin());
+    }
+    
+    // 비디오 컬렉션 규칙
+    match /videos/{videoId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && 
+                    (resource.data.authorId == request.auth.uid || isAdmin());
+      allow delete: if isAuthenticated() && 
+                    (resource.data.authorId == request.auth.uid || isAdmin());
+    }
+    
+    // 알림 컬렉션 규칙
+    match /notifications/{notificationId} {
+      allow read: if isAuthenticated() && resource.data.recipientId == request.auth.uid;
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && resource.data.recipientId == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.recipientId == request.auth.uid;
+    }
+  }
+}

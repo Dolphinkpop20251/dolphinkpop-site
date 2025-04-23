@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Firebase 연결 테스트</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      padding: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    h1 {
+      color: #333;
+    }
+    button {
+      padding: 10px 15px;
+      background-color: #4285f4;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-right: 10px;
+      margin-bottom: 20px;
+    }
+    button:hover {
+      background-color: #3367d6;
+    }
+    pre {
+      background-color: #f5f5f5;
+      padding: 15px;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+    .success {
+      color: green;
+      font-weight: bold;
+    }
+    .error {
+      color: red;
+      font-weight: bold;
+    }
+    .warning {
+      color: orange;
+      font-weight: bold;
+    }
+    .indicator {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+    .green {
+      background-color: green;
+    }
+    .red {
+      background-color: red;
+    }
+    .orange {
+      background-color: orange;
+    }
+  </style>
+</head>
+<body>
+  <h1>Firebase 연결 테스트</h1>
+  
+  <div>
+    <button id="testButton">연결 테스트</button>
+    <button id="clearButton">로그 지우기</button>
+  </div>
+  
+  <h2>Firebase 구성</h2>
+  <pre id="config"></pre>
+  
+  <h2>네트워크 상태</h2>
+  <p><span class="indicator" id="networkIndicator"></span> <span id="networkStatus"></span></p>
+  
+  <h2>테스트 결과</h2>
+  <pre id="results"></pre>
+  
+  <h2>로그</h2>
+  <pre id="logs"></pre>
+  
+  <script type="module">
+    // Firebase 구성 정보 (프로젝트 설정에서 가져온 값)
+    const firebaseConfig = {
+      apiKey: "AIzaSyCwcCiOudK_3CzuAS16NY7KfeSEPbh6HBU",
+      authDomain: "dolphin-kpop-9fc18.firebaseapp.com",
+      projectId: "dolphin-kpop-9fc18",
+      storageBucket: "dolphin-kpop-9fc18.appspot.com",
+      messagingSenderId: "157488356518",
+      appId: "1:157488356518:web:8d7065ff7700aa4b7f2867",
+      measurementId: "G-3JWK26LJTF"
+    };
+
+    // 구성 정보 표시
+    document.getElementById('config').textContent = JSON.stringify(firebaseConfig, null, 2);
+
+    // 로그 함수
+    function log(message, type = 'info') {
+      const logsElement = document.getElementById('logs');
+      const timestamp = new Date().toLocaleTimeString();
+      
+      let className = '';
+      if (type === 'success') className = 'success';
+      if (type === 'error') className = 'error';
+      if (type === 'warning') className = 'warning';
+      
+      const logMessage = `[${timestamp}] ${message}\n`;
+      
+      if (className) {
+        logsElement.innerHTML += `<span class="${className}">${logMessage}</span>`;
+      } else {
+        logsElement.innerHTML += logMessage;
+      }
+      
+      // 자동 스크롤
+      logsElement.scrollTop = logsElement.scrollHeight;
+    }
+
+    // 네트워크 상태 업데이트
+    function updateNetworkStatus() {
+      const isOnline = navigator.onLine;
+      const indicator = document.getElementById('networkIndicator');
+      const status = document.getElementById('networkStatus');
+      
+      if (isOnline) {
+        indicator.className = 'indicator green';
+        status.textContent = '인터넷 연결됨';
+        status.className = 'success';
+      } else {
+        indicator.className = 'indicator red';
+        status.textContent = '인터넷 연결 끊김';
+        status.className = 'error';
+      }
+    }
+
+    // 초기 네트워크 상태 설정
+    updateNetworkStatus();
+
+    // 네트워크 상태 변경 이벤트 리스너
+    window.addEventListener('online', () => {
+      updateNetworkStatus();
+      log('인터넷 연결이 복원되었습니다.', 'success');
+    });
+
+    window.addEventListener('offline', () => {
+      updateNetworkStatus();
+      log('인터넷 연결이 끊겼습니다.', 'error');
+    });
+
+    // 로그 지우기 버튼
+    document.getElementById('clearButton').addEventListener('click', () => {
+      document.getElementById('logs').innerHTML = '';
+      document.getElementById('results').innerHTML = '';
+      log('로그를 지웠습니다.');
+    });
+
+    // 연결 테스트 버튼
+    document.getElementById('testButton').addEventListener('click', async () => {
+      const resultsElement = document.getElementById('results');
+      resultsElement.innerHTML = '테스트 진행 중...';
+      
+      try {
+        // Firebase 모듈 동적 로드
+        log('Firebase SDK 로드 중...');
+        
+        const { initializeApp } = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js');
+        log('Firebase App 모듈 로드 성공', 'success');
+        
+        const { getFirestore, doc, getDoc } = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
+        log('Firestore 모듈 로드 성공', 'success');
+        
+        const { getStorage } = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js');
+        log('Storage 모듈 로드 성공', 'success');
+        
+        const { getAuth } = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js');
+        log('Auth 모듈 로드 성공', 'success');
+        
+        // Firebase 초기화
+        log('Firebase 앱 초기화 중...');
+        const app = initializeApp(firebaseConfig);
+        log('Firebase 앱 초기화 성공', 'success');
+        
+        // 서비스 초기화
+        log('Firebase 서비스 초기화 중...');
+        const auth = getAuth(app);
+        log('Auth 서비스 초기화 성공', 'success');
+        
+        const db = getFirestore(app);
+        log('Firestore 서비스 초기화 성공', 'success');
+        
+        const storage = getStorage(app);
+        log('Storage 서비스 초기화 성공', 'success');
+        
+        // Firestore 연결 테스트
+        log('Firestore 연결 테스트 중...');
+        try {
+          const testDocRef = doc(db, 'users', 'test-connection');
+          const docSnap = await getDoc(testDocRef);
+          log(`Firestore 연결 테스트 성공 (문서 ${docSnap.exists() ? '존재함' : '존재하지 않음'})`, 'success');
+        } catch (firestoreError) {
+          log(`Firestore 연결 실패: ${firestoreError.message}`, 'error');
+          throw firestoreError;
+        }
+        
+        // 결과 표시
+        resultsElement.innerHTML = '<span class="success">✅ 모든 테스트가 성공했습니다!</span>\n\n'
+          + '- ✅ Firebase SDK 로드 성공\n'
+          + '- ✅ Firebase 앱 초기화 성공\n'
+          + '- ✅ Firebase 서비스 (Auth, Firestore, Storage) 초기화 성공\n'
+          + '- ✅ Firestore 데이터베이스 연결 성공';
+        
+      } catch (error) {
+        // 오류 처리
+        log(`테스트 실패: ${error.message}`, 'error');
+        resultsElement.innerHTML = `<span class="error">❌ 테스트 실패: ${error.message}</span>\n\n`
+          + '문제 해결 방법:\n'
+          + '1. 인터넷 연결 상태를 확인하세요.\n'
+          + '2. Firebase 프로젝트 구성이 올바른지 확인하세요.\n'
+          + '3. Firebase 콘솔에서 해당 프로젝트가 활성화되어 있는지 확인하세요.\n'
+          + '4. 브라우저 캐시 및 쿠키를 지우고 다시 시도하세요.\n'
+          + '5. 개발자 도구 콘솔(F12)에서 자세한 오류 메시지를 확인하세요.';
+      }
+    });
+
+    // 초기 로그
+    log('Firebase 연결 테스트 페이지가 로드되었습니다.');
+    log(`현재 네트워크 상태: ${navigator.onLine ? '온라인' : '오프라인'}`);
+  </script>
+</body>
+</html>

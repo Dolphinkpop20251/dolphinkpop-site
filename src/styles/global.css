@@ -1,0 +1,258 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import './variables.css';
+
+/* 기본 스타일 */
+body {
+  @apply bg-primary-50 text-gray-800 dark:bg-dark-700 dark:text-gray-100;
+  font-family: 'Noto Sans KR', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Roboto', 'Noto Sans KR', sans-serif;
+  @apply font-bold;
+}
+
+a {
+  @apply text-primary-600 hover:text-primary-800 dark:text-primary-300 dark:hover:text-primary-200;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+/* 컨테이너 */
+.container-custom {
+  @apply container mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.section {
+  @apply py-8 sm:py-12;
+}
+
+/* 버튼 스타일 */
+.btn {
+  @apply inline-flex items-center justify-center px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200;
+}
+
+.btn-primary {
+  @apply bg-primary-500 text-white hover:bg-primary-600 dark:bg-primary-600 dark:hover:bg-primary-700;
+}
+
+.btn-secondary {
+  @apply bg-secondary-600 text-white hover:bg-secondary-700 dark:bg-secondary-700 dark:hover:bg-secondary-800;
+}
+
+.btn-outline {
+  @apply border border-gray-300 text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800;
+}
+
+.btn-danger {
+  @apply bg-red-600 text-white hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800;
+}
+
+.btn-sm {
+  @apply px-3 py-1.5 text-xs rounded;
+}
+
+.btn-lg {
+  @apply px-6 py-3 text-base rounded-lg;
+}
+
+.btn-icon {
+  @apply p-2 rounded-full;
+}
+
+/* 폼 스타일 */
+.form-group {
+  @apply mb-4;
+}
+
+.form-label {
+  @apply block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2;
+  margin-bottom: 0.5rem; /* 레이블과 입력 필드 간 간격 증가 */
+}
+
+.form-input {
+  @apply block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-dark-600 dark:border-dark-500 dark:text-white;
+  padding-left: 2.5rem; /* 아이콘을 위한 왼쪽 패딩 추가 */
+  height: 42px; /* 높이 고정으로 아이콘과 겹침 방지 */
+}
+
+.form-textarea {
+  @apply block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-dark-600 dark:border-dark-500 dark:text-white;
+}
+
+.form-select {
+  @apply block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-dark-600 dark:border-dark-500 dark:text-white;
+}
+
+.form-error {
+  @apply mt-1 text-sm text-red-600 dark:text-red-400;
+}
+
+/* 카드 스타일 */
+.card {
+  @apply bg-white dark:bg-dark-700 rounded-lg shadow-soft overflow-hidden;
+}
+
+.card-header {
+  @apply px-6 py-4 border-b border-gray-200 dark:border-dark-500;
+}
+
+.card-body {
+  @apply px-6 py-4;
+}
+
+.card-footer {
+  @apply px-6 py-4 border-t border-gray-200 dark:border-dark-500;
+}
+
+/* 배지 스타일 */
+.badge {
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+}
+
+.badge-primary {
+  @apply bg-primary-100 text-primary-800 dark:bg-primary-900 dark:text-primary-300;
+}
+
+.badge-secondary {
+  @apply bg-secondary-100 text-secondary-800 dark:bg-secondary-900 dark:text-secondary-300;
+}
+
+.badge-success {
+  @apply bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300;
+}
+
+.badge-warning {
+  @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300;
+}
+
+.badge-danger {
+  @apply bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300;
+}
+
+/* 애니메이션 */
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+.slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+.shake {
+  animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes shake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+  40%, 60% { transform: translate3d(4px, 0, 0); }
+}
+
+/* 커스텀 스크롤바 */
+::-webkit-scrollbar {
+  @apply w-2;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100 dark:bg-dark-600;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-400 dark:bg-dark-400 rounded-full hover:bg-gray-500 dark:hover:bg-dark-300;
+}
+
+/* 반응형 타이포그래피 */
+h1 {
+  @apply text-3xl sm:text-4xl font-bold;
+}
+
+h2 {
+  @apply text-2xl sm:text-3xl font-bold;
+}
+
+h3 {
+  @apply text-xl sm:text-2xl font-bold;
+}
+
+h4 {
+  @apply text-lg sm:text-xl font-bold;
+}
+
+h5 {
+  @apply text-base sm:text-lg font-bold;
+}
+
+h6 {
+  @apply text-sm sm:text-base font-bold;
+}
+
+/* 아이돌 이미지 스타일 */
+.idol-img {
+  @apply object-cover rounded-lg;
+  aspect-ratio: 3/4;
+}
+
+/* 갤러리 이미지 그리드 */
+.gallery-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4;
+}
+
+/* 반응형 비디오 컨테이너 */
+.video-container {
+  @apply relative w-full overflow-hidden;
+  padding-top: 56.25%; /* 16:9 비율 */
+}
+
+.video-container iframe,
+.video-container video {
+  @apply absolute top-0 left-0 w-full h-full;
+}
+
+/* 토스트 컨테이너 */
+.toast-container {
+  @apply fixed bottom-4 right-4 z-50 flex flex-col gap-2;
+}
+
+/* 댓글 스레드 스타일 */
+.comment-thread {
+  @apply pl-4 border-l-2 border-gray-200 dark:border-dark-500 ml-4 mt-2;
+}
+
+/* 프로필 아바타 */
+.avatar {
+  @apply rounded-full object-cover;
+}
+
+.avatar-sm {
+  @apply w-8 h-8;
+}
+
+.avatar-md {
+  @apply w-10 h-10;
+}
+
+.avatar-lg {
+  @apply w-16 h-16;
+}
+
+/* 헤더 스타일 */
+.header-shadow {
+  @apply shadow-md;
+}
